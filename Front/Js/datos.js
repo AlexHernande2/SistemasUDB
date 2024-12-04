@@ -147,47 +147,36 @@ function addItem(event) {
 }
 
 // Cargar datos desde MongoDB al cargar la página
-fetch(`https://3392-2800-e2-ba80-854-d0f7-be11-2481-ce77.ngrok-free.app/items?correo=${encodeURIComponent(userEmail)}`, {
-    method: 'GET',
-    headers: {
-        'Accept': 'application/json'
-    }
-})
-.then(response => {
-    console.log('Estado de la respuesta:', response.status);
-    console.log('Encabezados de la respuesta:', response.headers);
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
-})
-.then(data => {
-    console.log('Datos recibidos del servidor:', data);
-    const tableBody = document.getElementById('tableBody');
-    tableBody.innerHTML = ''; // Limpiar filas existentes
+const ngrokUrl = 'https://3392-2800-e2-ba80-854-d0f7-be11-2481-ce77.ngrok-free.app.ngrok.io';
 
-    if (data.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5">No se encontraron items para este correo.</td></tr>';
-        return;
-    }
+fetch(${ngrokUrl}/items?correo=${encodeURIComponent(userEmail)})
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const tableBody = document.getElementById('tableBody');
+        tableBody.innerHTML = ''; // Limpiar filas existentes
 
-    data.forEach(item => {
-        const newRow = document.createElement('tr');
-        newRow.setAttribute('data-id', item.id);
+        data.forEach(item => {
+            const newRow = document.createElement('tr');
+            newRow.setAttribute('data-id', item.id);
 
-        newRow.innerHTML = `
-            <th scope="row">${item.id}</th>
-            <td>${item.asunto}</td>
-            <td>${item.estado}</td>
-            <td class="text-center">
-                <button type="button" class="btn btn-success w-50" id="addBtn-${item.id}" onclick="handleUpload(${item.id})">Agregar</button>
-            </td>
-            <td>${item.ruta || ''}</td>
-        `;
-        tableBody.appendChild(newRow);
-    });
-})
-.catch(error => console.error('Error al cargar los datos desde MongoDB:', error));
+            newRow.innerHTML = `
+                <th scope="row">${item.id}</th>
+                <td>${item.asunto}</td>
+                <td>${item.estado}</td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-success w-50" id="addBtn-${item.id}" onclick="handleUpload(${item.id})">Agregar</button>
+                </td>
+                <td>${item.ruta || ''}</td>
+            `;
+            tableBody.appendChild(newRow);
+        });
+    })
+    .catch(error => console.error('Error al cargar los datos desde MongoDB:', error));
 
 
 
