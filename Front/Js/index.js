@@ -16,8 +16,8 @@ document.getElementById('emailForm').addEventListener('submit', function(event) 
     localStorage.setItem('userEmail', email);
     //
 
-    // Enviar el correo al backend para generar y enviar el código
-    fetch('https://3392-2800-e2-ba80-854-d0f7-be11-2481-ce77.ngrok-free.app/send-verification-code', {
+    // Enviar el correo al backend para generar y enviar el código https://stback-zg4f.onrender.com
+    fetch('https://stback-zg4f.onrender.com/send-verification-code', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
