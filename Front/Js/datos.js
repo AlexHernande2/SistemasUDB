@@ -155,10 +155,19 @@ fetch(`https://9816-186-114-123-249.ngrok-free.app/items?correo=${encodeURICompo
 })
 .then(response => {
     console.log('Estado de la respuesta:', response.status);
-    console.log('Encabezados de la respuesta:', response.headers);
+    console.log('Encabezados completos:', Array.from(response.headers.entries()));
+    
+    const contentType = response.headers.get('content-type');
+    console.log('Content-Type recibido:', contentType);
+
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
+
+    if (!contentType || !contentType.includes('application/json')) {
+        throw new Error(`El servidor no devolvió JSON. Content-Type: ${contentType}`);
+    }
+    
     return response.json();
 })
 .then(data => {
