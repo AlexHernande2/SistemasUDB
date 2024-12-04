@@ -148,10 +148,20 @@ function addItem(event) {
 
 // Cargar datos desde MongoDB al cargar la página
 fetch(`https://3392-2800-e2-ba80-854-d0f7-be11-2481-ce77.ngrok-free.app/items?correo=${encodeURIComponent(userEmail)}`)
-    .then(response => response.json())
+    .then(response => {
+        console.log('Estado de la respuesta:', response.status);
+        console.log('Contenido de la respuesta:', response);
+        return response.json(); // Intenta parsear el JSON
+    })
     .then(data => {
+        console.log('Datos recibidos del servidor:', data);
         const tableBody = document.getElementById('tableBody');
         tableBody.innerHTML = ''; // Limpiar filas existentes
+
+        if (data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="5">No se encontraron items para este correo.</td></tr>';
+            return;
+        }
 
         data.forEach(item => {
             const newRow = document.createElement('tr');
@@ -167,8 +177,8 @@ fetch(`https://3392-2800-e2-ba80-854-d0f7-be11-2481-ce77.ngrok-free.app/items?co
                 <td>${item.ruta || ''}</td>
             `;
             tableBody.appendChild(newRow);
-
         });
     })
     .catch(error => console.error('Error al cargar los datos desde MongoDB:', error));
+
 
